@@ -1,12 +1,14 @@
-DockReg (Ansible Orchestrated Docker Registry 2.0)
+DockReg
 ================================================================================
+##### (Ansible Orchestrated Docker Registry 2.0)
+
 ###### Copyright (c) 2016 Lingxiao Xia
 ###### Creation: Lingxiao Xia
 ###### Creation Date: 2016-03-16
 
 This package creates a tls enabled and password protected `Docker` registry using the image `registry:2`. 
 
-This generates its own CA and provisions the destination hosts to trust the CA.
+This package generates its own CA and provisions the destination hosts to trust the CA.
 
 A few steps to take before running the playbook:
 1. Please open the inventory files [staging](staging) and modify the staging destinations according to your setup.
