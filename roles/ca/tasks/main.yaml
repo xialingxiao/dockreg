@@ -1,0 +1,24 @@
+- name: make sure that ca directory exists
+  file: path={{ ca_dir }} state=directory
+- name: copy openssl configuration over
+  template: src=openssl.cnf dest={{ ca_dir }}/openssl.cnf
+- name: generate ca key
+  command: openssl genrsa -des3 -passout pass:{{ ca_pass }} -out ca-key.pem 1024
+  args:
+    chdir: "{{ ca_dir }}"
+    creates: ca-key.pem
+- name: generate ca cert
+  expect:
+    command: openssl req -new -x509 -days 3650 -passin pass:{{ ca_pass }} -key ca-key.pem -out ca.pem -config openssl.cnf
+    chdir: "{{ ca_dir }}"
+    creates: ca.pem
+    responses:
+      (?i)country: "."
+      (?i)province: "."
+      (?i)locality: "."
+      (?i)organization: "."
+      (?i)unit: "."
+      (?i)project: "."
+      (?i)common: "{{ creator }}"
+      (?i)email: "{{ email_address }}"
+    echo: yes

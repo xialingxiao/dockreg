@@ -1,0 +1,60 @@
+---
+
+- name: CA generation
+  hosts: registry
+  vars_files:
+    - vars/vars 
+    - vars/common_vars 
+    - vars/common_vars_vault
+  roles:
+    - ca
+
+- name: Propagate CA
+  hosts: all
+  vars_files:
+    - vars/vars 
+    - vars/common_vars 
+    - vars/common_vars_vault
+  tasks:
+    - name: make sure that ca directory exists
+      file: path={{ ca_dir }} state=directory
+    - name: sync the CA
+      synchronize:
+        src: "{{ ca_dir }}/"
+        dest: "{{ ca_dir }}/"
+      delegate_to: registry
+    - name: create folder for trusted ca
+      file: path=/usr/local/share/ca-certificates/{{ project_id }} state=directory
+      become: true
+      become_user: root
+    - name: transfer the CA certificate
+      copy: remote_src=True src="{{ ca_dir }}/ca.pem" dest=/usr/local/share/ca-certificates/{{ project_id }}/ca.crt
+      become: true
+      become_user: root
+    - name: update list of trusted CAs 
+      command: update-ca-certificates
+      become: true
+      become_user: root
+    - name: restart docker
+      service: name=docker state=restarted
+      become: true
+      become_user: root
+
+- name: create registry
+  hosts: registry
+  vars_files:
+    - vars/vars 
+    - vars/common_vars 
+    - vars/common_vars_vault
+  roles:
+    - registry
+
+- name: login
+  hosts: all
+  vars_files:
+    - vars/vars 
+    - vars/common_vars 
+    - vars/common_vars_vault
+  tasks:
+    - name: login to the registry
+      command: docker login -u {{ registry_user }} -p {{ registry_pass }} -e null https://{{ hostvars['registry']['ansible_default_ipv4']['address'] }}:{{ registry_port }}

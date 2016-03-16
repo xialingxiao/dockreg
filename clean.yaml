@@ -1,0 +1,37 @@
+---
+
+- name: clean
+  hosts: registry
+  vars_files:
+    - vars/common_vars 
+    - vars/common_vars_vault
+    - vars/vars
+  tasks:
+    - name: 'clean the staging area'
+      file: 'path={{ staging_area }} state=absent'
+      become: true
+      become_user: root
+
+- name: remove the ca
+  hosts: all
+  vars_files:
+    - vars/common_vars 
+    - vars/common_vars_vault
+    - vars/vars
+  tasks:
+    - name: clean the ca directory
+      file: 'path={{ ca_dir }} state=absent'
+      become: true
+      become_user: root
+    - name: remove ca cert from host
+      file: path=/usr/local/share/ca-certificates/{{ project_id }} state=absent
+      become: true
+      become_user: root
+    - name: update list of trusted CAs 
+      command: update-ca-certificates
+      become: true
+      become_user: root
+    - name: restart docker
+      service: name=docker state=restarted
+      become: true
+      become_user: root

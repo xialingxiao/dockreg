@@ -1,0 +1,13 @@
+---
+
+- name: stop
+  hosts: registry
+  vars_files:
+    - vars/common_vars 
+    - vars/common_vars_vault
+    - vars/vars
+  tasks:
+    - name: 'stop the registry'
+      command: '{{ staging_area }}/docker-compose -f {{ staging_area }}/registry/docker-compose.yaml stop'
+    - name: 'remove the registry'
+      command: '{{ staging_area }}/docker-compose -f {{ staging_area }}/registry/docker-compose.yaml rm -vf'

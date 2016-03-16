@@ -1,0 +1,45 @@
+- name: make sure that staging directory exists
+  file: path={{ staging_area }} state=directory
+- name: create folder for registry
+  file: path={{ staging_area }}/registry/ state=directory
+- name: copy docker-compose
+  copy: src=docker-compose dest={{ staging_area }}/docker-compose
+- name: make docker-compose executable
+  file: path={{ staging_area }}/docker-compose mode=0755
+- name: copy docker-compose config file
+  template: src=docker-compose.yaml dest={{ staging_area }}/registry/docker-compose.yaml
+- name: create folder for data
+  file: path={{ staging_area }}/registry/data state=directory
+- name: create folder for auth
+  file: path={{ staging_area }}/registry/auth state=directory
+- name: create htpasswd file
+  command: 'docker run --entrypoint htpasswd registry:2 -Bbn {{ registry_user }} {{ registry_pass }}'
+  register: htpasswd
+- name: write password to htpasswd file
+  copy: 'content={{ htpasswd.stdout }} dest={{ staging_area }}/registry/auth/htpasswd'
+- name: create folder for certificates
+  file: path={{ staging_area }}/registry/certs state=directory
+- name: 'delete key if exist'
+  file: 'path={{ staging_area }}/registry/certs/domain.key state=absent'
+- name: 'delete cert if exist'
+  file: 'path={{ staging_area }}/registry/certs/domain.crt state=absent'
+- name: 'generate registry key "domain.key"'
+  command: 'openssl genrsa -out {{ staging_area }}/registry/certs/domain.key 2048'
+- name: 'generate "server.csr" from "domain.key"'
+  command: 'openssl req -subj "/CN={{ host_ip }}" -new -key {{ staging_area }}/registry/certs/domain.key -out {{ staging_area }}/registry/certs/server.csr'
+- name: 'generate "extfile.cnf"'
+  copy: 'content="subjectAltName = IP:{{ host_ip }},IP:127.0.0.1,DNS:localhost" dest={{ staging_area }}/registry/certs/extfile.cnf'
+- name: 'generate "domain.crt"'
+  command: 'openssl x509 -req -days 365 -in {{ staging_area }}/registry/certs/server.csr -CA {{ ca_dir }}/ca.pem -CAkey {{ ca_dir }}/ca-key.pem -CAcreateserial -out {{ staging_area }}/registry/certs/domain.crt -extfile {{ staging_area }}/registry/certs/extfile.cnf -passin "pass:{{ ca_pass }}"'
+- name: 'remove intermediate files'
+  file: 'path={{ staging_area }}/registry/certs/{{ item }} state=absent'
+  with_items:
+    - extfile.cnf
+    - server.csr
+- name: 'chmod for key'
+  file: 'path={{ staging_area }}/registry/certs/domain.key mode=0400'
+- name: 'chmod for cert'
+  file: 'path={{ staging_area }}/registry/certs/domain.crt mode=0444'
+- name: 'launch the registry'
+  command: '{{ staging_area }}/docker-compose -f {{ staging_area }}/registry/docker-compose.yaml up -d'
+

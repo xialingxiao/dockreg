@@ -1,0 +1,10 @@
+---
+project_id: "dockreg"
+country_abbreviation: "HK"
+state_name: "Hong Kong"
+city_name: "Hong Kong"
+organization_name: "CUHK"
+organization_unit: "Informatio Engineering Department"
+project_name: "Private Docker Registry"
+creator: "Lingxiao Xia"
+email_address: "s1006595991@gmail.com"
