@@ -2,7 +2,6 @@ DockReg
 ================================================================================
 ##### (Ansible Orchestrated Docker Registry 2.0)
 
-###### Copyright (c) 2016 Lingxiao Xia
 ###### Creation: Lingxiao Xia
 ###### Creation Date: 2016-03-16
 
