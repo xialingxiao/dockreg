@@ -1,4 +1,4 @@
 # file: staging
 
-[all]
+[dest]
 registry ansible_connection=local staging_area="~/.docker_registry" host_ip="{{ hostvars['registry']['ansible_default_ipv4']['address'] }}" ansible_ssh_user=lingxiao

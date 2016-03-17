@@ -9,8 +9,21 @@
   roles:
     - ca
 
+- name: Get CA 
+  hosts: registry
+  vars_files:
+    - vars/vars 
+    - vars/common_vars 
+    - vars/common_vars_vault
+  tasks:
+    - name: sync the CA
+      synchronize:
+        src: "{{ ca_dir }}/"
+        dest: tmp/
+        mode: pull
+
 - name: Propagate CA
-  hosts: all
+  hosts: dest
   vars_files:
     - vars/vars 
     - vars/common_vars 
@@ -19,10 +32,9 @@
     - name: make sure that ca directory exists
       file: path={{ ca_dir }} state=directory
     - name: sync the CA
-      synchronize:
-        src: "{{ ca_dir }}/"
-        dest: "{{ ca_dir }}/"
-      delegate_to: registry
+      copy: src=tmp/ca.pem dest="{{ ca_dir }}/ca.pem"
+    - name: sync the CA key
+      copy: src=tmp/ca-key.pem dest="{{ ca_dir }}/ca-key.pem"
     - name: create folder for trusted ca
       file: path=/usr/local/share/ca-certificates/{{ project_id }} state=directory
       become: true
@@ -50,7 +62,7 @@
     - registry
 
 - name: login
-  hosts: all
+  hosts: dest
   vars_files:
     - vars/vars 
     - vars/common_vars 
