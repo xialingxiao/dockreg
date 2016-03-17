@@ -4,7 +4,7 @@
   hosts: registry
   vars_files:
     - vars/common_vars 
-    - vars/common_vars_vault
+    - vars/common_vault
     - vars/vars
   vars:
     - project_stage_dir: "{{ stage_dir }}/{{ project_id }}/{{ inventory_hostname }}"
@@ -16,9 +16,10 @@
 
 - name: remove the ca
   hosts: all
+  serial: 1
   vars_files:
     - vars/common_vars 
-    - vars/common_vars_vault
+    - vars/common_vault
     - vars/vars
   tasks:
     - name: clean the ca directory

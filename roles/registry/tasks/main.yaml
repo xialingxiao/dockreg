@@ -25,6 +25,8 @@
   file: 'path={{ project_stage_dir }}/registry/certs/domain.crt state=absent'
 - name: 'generate registry key "domain.key"'
   command: 'openssl genrsa -out {{ project_stage_dir }}/registry/certs/domain.key 2048'
+- name: registry IP
+  debug: msg="{{ host_ip }}"
 - name: 'generate "server.csr" from "domain.key"'
   command: 'openssl req -subj "/CN={{ host_ip }}" -new -key {{ project_stage_dir }}/registry/certs/domain.key -out {{ project_stage_dir }}/registry/certs/server.csr'
 - name: 'generate "extfile.cnf"'

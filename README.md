@@ -12,7 +12,7 @@ This package generates its own CA and provisions the destination hosts to trust 
 A few steps to take before running the playbook:
 1. Please open the inventory files [staging](staging) and modify the staging destinations according to your setup.
 2. Please install `ansible 2.0.0.2` and its dependencies.
-3. Run `ansible-vault create vars/common_vars_vault` and add the following variables for passwords:
+3. Run `ansible-vault create vars/common_vault` and add the following variables for passwords:
     * `vault_ca_pass`
     * `vault_registry_pass`
 4. Please install `docker 1.10.0` and its dependencies.
