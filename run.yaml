@@ -19,7 +19,7 @@
     - name: sync the CA
       synchronize:
         src: "{{ ca_dir }}/"
-        dest: tmp/
+        dest: ca/
         mode: pull
 
 - name: Propagate CA
@@ -32,9 +32,9 @@
     - name: make sure that ca directory exists
       file: path={{ ca_dir }} state=directory
     - name: sync the CA
-      copy: src=tmp/ca.pem dest="{{ ca_dir }}/ca.pem"
+      copy: src=ca/ca.pem dest="{{ ca_dir }}/ca.pem"
     - name: sync the CA key
-      copy: src=tmp/ca-key.pem dest="{{ ca_dir }}/ca-key.pem"
+      copy: src=ca/ca-key.pem dest="{{ ca_dir }}/ca-key.pem"
     - name: create folder for trusted ca
       file: path=/usr/local/share/ca-certificates/{{ project_id }} state=directory
       become: true
