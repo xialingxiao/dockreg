@@ -1,4 +1,10 @@
 # file: staging
 
+registry ansible_connection=local host_ip="{{ hostvars['registry']['ansible_default_ipv4']['address'] }}" home_dir_abs="/home/lingxiao" stage_dir="{{ home_dir_abs }}/.ansible_stage" registry_port="5000" 
+
 [dest]
-registry ansible_connection=local staging_area="~/.docker_registry" host_ip="{{ hostvars['registry']['ansible_default_ipv4']['address'] }}" home_dir_abs="/home/lingxiao" staging_area="{{ home_dir_abs }}/.docker_registry"
+gateway ansible_connection=local home_dir_abs="/home/lingxiao" stage_dir="{{ home_dir_abs }}/.ansible_stage" docker_registry="{{ hostvars['registry']['ansible_default_ipv4']['address'] }}:{{ hostvars['registry']['registry_port'] }}" expose_kibana=9515 expose_elasticsearch=9525 expose_kibana_as="127.0.0.1" expose_elasticsearch_as="127.0.0.1"
+node0 ansible_connection=local home_dir_abs="/home/lingxiao" stage_dir="{{ home_dir_abs }}/.ansible_stage" 
+
+[nodes]
+node0 

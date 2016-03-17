@@ -6,6 +6,8 @@
     - vars/vars 
     - vars/common_vars 
     - vars/common_vars_vault
+  vars:
+    - project_stage_dir: "{{ stage_dir }}/{{ project_id }}/{{ inventory_hostname }}"
   roles:
     - ca
 
@@ -15,6 +17,8 @@
     - vars/vars 
     - vars/common_vars 
     - vars/common_vars_vault
+  vars:
+    - project_stage_dir: "{{ stage_dir }}/{{ project_id }}/{{ inventory_hostname }}"
   tasks:
     - name: sync the CA
       synchronize:
@@ -28,6 +32,8 @@
     - vars/vars 
     - vars/common_vars 
     - vars/common_vars_vault
+  vars:
+    - project_stage_dir: "{{ stage_dir }}/{{ project_id }}/{{ inventory_hostname }}"
   tasks:
     - name: make sure that ca directory exists
       file: path={{ ca_dir }} state=directory
@@ -43,6 +49,16 @@
       copy: remote_src=True src="{{ ca_dir }}/ca.pem" dest=/usr/local/share/ca-certificates/{{ project_id }}/ca.crt
       become: true
       become_user: root
+
+- name: Update CA
+  hosts: dest
+  vars_files:
+    - vars/vars 
+    - vars/common_vars 
+    - vars/common_vars_vault
+  vars:
+    - project_stage_dir: "{{ stage_dir }}/{{ project_id }}/{{ inventory_hostname }}"
+  tasks:  
     - name: update list of trusted CAs 
       command: update-ca-certificates
       become: true
@@ -58,6 +74,8 @@
     - vars/vars 
     - vars/common_vars 
     - vars/common_vars_vault
+  vars:
+    - project_stage_dir: "{{ stage_dir }}/{{ project_id }}/{{ inventory_hostname }}"
   roles:
     - registry
 
@@ -67,6 +85,8 @@
     - vars/vars 
     - vars/common_vars 
     - vars/common_vars_vault
+  vars:
+    - project_stage_dir: "{{ stage_dir }}/{{ project_id }}/{{ inventory_hostname }}"
   tasks:
     - name: login to the registry
-      command: docker login -u {{ registry_user }} -p {{ registry_pass }} -e null https://{{ hostvars['registry']['ansible_default_ipv4']['address'] }}:{{ registry_port }}
+      command: docker login -u {{ registry_user }} -p {{ registry_pass }} -e null https://{{ hostvars['registry']['ansible_default_ipv4']['address'] }}:{{ hostvars['registry']['registry_port'] }}

@@ -21,4 +21,3 @@
       (?i)project: "."
       (?i)common: "{{ creator }}"
       (?i)email: "{{ email_address }}"
-    echo: yes

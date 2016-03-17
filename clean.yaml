@@ -6,9 +6,11 @@
     - vars/common_vars 
     - vars/common_vars_vault
     - vars/vars
+  vars:
+    - project_stage_dir: "{{ stage_dir }}/{{ project_id }}/{{ inventory_hostname }}"
   tasks:
     - name: 'clean the staging area'
-      file: 'path={{ staging_area }} state=absent'
+      file: 'path={{ project_stage_dir }} state=absent'
       become: true
       become_user: root
 

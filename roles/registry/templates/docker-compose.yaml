@@ -13,7 +13,7 @@ services:
       REGISTRY_AUTH_HTPASSWD_PATH: /auth/htpasswd
       REGISTRY_AUTH_HTPASSWD_REALM: Registry Realm
     volumes:
-      - {{ staging_area }}/registry/data:/var/lib/registry
-      - {{ staging_area }}/registry/certs:/certs
-      - {{ staging_area }}/registry/auth:/auth
+      - {{ project_stage_dir }}/registry/data:/var/lib/registry
+      - {{ project_stage_dir }}/registry/certs:/certs
+      - {{ project_stage_dir }}/registry/auth:/auth
     container_name: {{ project_id }}
