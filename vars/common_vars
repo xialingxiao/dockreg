@@ -1,5 +1,5 @@
 ca_pass: "{{ vault_ca_pass }}"
 registry_user: "lingxiao"
 registry_pass: "{{ vault_registry_pass }}"
-ca_dir: "/home/{{ ansible_ssh_user }}/.root_ca"
+ca_dir: "{{ home_dir_abs }}/.root_ca"
 registry_port: "5000"
