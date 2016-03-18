@@ -10,6 +10,7 @@ This package creates a tls enabled and password protected `Docker` registry usin
 This package generates its own CA and provisions the destination hosts to trust the CA.
 
 A few steps to take before running the playbook:
+
 1. Please open the inventory files [staging](staging) and modify the staging destinations according to your setup.
 2. Please install `ansible 2.0.0.2` and its dependencies.
 3. Run `ansible-vault create vars/common_vault` and add the following variables for passwords:
