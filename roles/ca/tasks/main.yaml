@@ -1,12 +1,20 @@
 - name: make sure that ca directory exists
   file: path={{ ca_dir }} state=directory
+- name: see if the certificate exists  
+  stat: path={{ ca_dir }}/ca.pem
+  register: ca_cert
+- name: see if the certificate key exists  
+  stat: path={{ ca_dir }}/ca-key.pem
+  register: ca_key
 - name: copy openssl configuration over
   template: src=openssl.cnf dest={{ ca_dir }}/openssl.cnf
+  when: ca_cert.stat.exists == False or ca_key.stat.exists == False
 - name: generate ca key
   command: openssl genrsa -des3 -passout pass:{{ ca_pass }} -out ca-key.pem 1024
   args:
     chdir: "{{ ca_dir }}"
     creates: ca-key.pem
+  when: ca_cert.stat.exists == False or ca_key.stat.exists == False
 - name: generate ca cert
   expect:
     command: openssl req -new -x509 -days 3650 -passin pass:{{ ca_pass }} -key ca-key.pem -out ca.pem -config openssl.cnf
@@ -21,3 +29,4 @@
       (?i)project: "."
       (?i)common: "{{ creator }}"
       (?i)email: "{{ email_address }}"
+  when: ca_cert.stat.exists == False or ca_key.stat.exists == False

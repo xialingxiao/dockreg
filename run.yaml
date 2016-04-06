@@ -21,42 +21,12 @@
     - vars/common_vault
   vars:
     - project_stage_dir: "{{ stage_dir }}/{{ project_id }}/{{ inventory_hostname }}"
-  roles:
-    - ca
-
-- name: Get CA 
-  hosts: registry
-  vars_files:
-    - vars/vars 
-    - vars/vault
-    - vars/common_vars 
-    - vars/common_vault
-  vars:
-    - project_stage_dir: "{{ stage_dir }}/{{ project_id }}/{{ inventory_hostname }}"
-  tasks:
+  post_tasks:
     - name: sync the CA
       synchronize:
         src: "{{ ca_dir }}/"
         dest: ca/
         mode: pull
-
-- name: Propagate CA
-  hosts: dest
-  serial: 1
-  vars_files:
-    - vars/vars 
-    - vars/vault
-    - vars/common_vars 
-    - vars/common_vault
-  vars:
-    - project_stage_dir: "{{ stage_dir }}/{{ project_id }}/{{ inventory_hostname }}"
-  tasks:
-    - name: make sure that ca directory exists
-      file: path={{ ca_dir }} state=directory
-    - name: sync the CA
-      copy: src=ca/ca.pem dest="{{ ca_dir }}/ca.pem"
-    - name: sync the CA key
-      copy: src=ca/ca-key.pem dest="{{ ca_dir }}/ca-key.pem"
     - name: create folder for trusted ca
       file: path=/usr/local/share/ca-certificates/{{ project_id }} state=directory
       become: true
@@ -65,18 +35,6 @@
       copy: remote_src=True src="{{ ca_dir }}/ca.pem" dest=/usr/local/share/ca-certificates/{{ project_id }}/ca.crt
       become: true
       become_user: root
-
-- name: Update CA
-  hosts: dest
-  serial: 1
-  vars_files:
-    - vars/vars 
-    - vars/vault
-    - vars/common_vars 
-    - vars/common_vault
-  vars:
-    - project_stage_dir: "{{ stage_dir }}/{{ project_id }}/{{ inventory_hostname }}"
-  tasks:  
     - name: update list of trusted CAs 
       command: update-ca-certificates
       become: true
@@ -85,8 +43,11 @@
       service: name=docker state=restarted
       become: true
       become_user: root
+  roles:
+    - ca
 
-- name: create registry
+
+- name: Run registry
   hosts: registry
   vars_files:
     - vars/vars 
@@ -95,18 +56,9 @@
     - vars/common_vault
   vars:
     - project_stage_dir: "{{ stage_dir }}/{{ project_id }}/{{ inventory_hostname }}"
-  roles:
-    - registry
-
-- name: login
-  hosts: dest
-  vars_files:
-    - vars/vars 
-    - vars/vault
-    - vars/common_vars 
-    - vars/common_vault
-  vars:
-    - project_stage_dir: "{{ stage_dir }}/{{ project_id }}/{{ inventory_hostname }}"
-  tasks:
+  post_tasks:
     - name: login to the registry
       command: docker login -u {{ registry_user }} -p {{ registry_pass }} -e null https://{{ docker_registry }}
+  roles:
+    - registry
+    

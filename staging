@@ -3,7 +3,7 @@
 registry ansible_connection=local home_dir_abs="/home/lingxiao" stage_dir="{{ home_dir_abs }}/.ansible_stage" registry_port="5000" 
 
 [dest]
-gateway ansible_connection=local home_dir_abs="/home/lingxiao" name="local" stage_dir="{{ home_dir_abs }}/.ansible_stage" expose_kibana=9515 expose_elasticsearch=9525 expose_kibana_as="127.0.0.1" expose_elasticsearch_as="127.0.0.1"
+gateway ansible_connection=local home_dir_abs="/home/lingxiao" name="local" stage_dir="{{ home_dir_abs }}/.ansible_stage" expose_kibana=9515 expose_receiver=9520 expose_elasticsearch=9525 expose_kibana_as="127.0.0.1" expose_elasticsearch_as="127.0.0.1" receiver_bind="127.0.0.1"
 node0 ansible_connection=local home_dir_abs="/home/lingxiao" stage_dir="{{ home_dir_abs }}/.ansible_stage" 
 
 [nodes]
