@@ -16,7 +16,10 @@ A few steps to take before running the playbook:
 3. Run `ansible-vault create vars/common_vault` and add the following variables for passwords:
     * `vault_ca_pass`
     * `vault_registry_pass`
-4. Please install `docker 1.10.0` and its dependencies.
+4. Run `ansible-vault create vars/vault` and add the following variables for passwords:
+    * `vault_organization_name`
+    * `vault_organization_pass`
+5. Please install `docker 1.10.0` and its dependencies.
 
 To generate the CA, start the registry and login to the registry from all destination hosts:
 ```
