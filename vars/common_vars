@@ -1,5 +1,5 @@
 ca_pass: "{{ vault_ca_pass }}"
-registry_user: "lingxiao"
+registry_user: "{{ vault_registry_user }}"
 registry_pass: "{{ vault_registry_pass }}"
 ca_dir: "{{ home_dir_abs }}/.root_ca"
 host_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"

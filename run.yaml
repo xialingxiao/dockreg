@@ -1,9 +1,22 @@
 ---
-
+- name: setup
+  hosts: all
+  vars_files:
+    - vars/vars
+    - vars/vault
+    - vars/common_vars 
+    - vars/common_vault
+  vars:
+    - project_stage_dir: "{{ stage_dir }}/{{ project_id }}/{{ inventory_hostname }}"
+  tasks:
+    - name: setup
+      debug: msg="gathered info from host" 
+      
 - name: CA generation
   hosts: registry
   vars_files:
     - vars/vars 
+    - vars/vault
     - vars/common_vars 
     - vars/common_vault
   vars:
@@ -15,6 +28,7 @@
   hosts: registry
   vars_files:
     - vars/vars 
+    - vars/vault
     - vars/common_vars 
     - vars/common_vault
   vars:
@@ -31,6 +45,7 @@
   serial: 1
   vars_files:
     - vars/vars 
+    - vars/vault
     - vars/common_vars 
     - vars/common_vault
   vars:
@@ -56,6 +71,7 @@
   serial: 1
   vars_files:
     - vars/vars 
+    - vars/vault
     - vars/common_vars 
     - vars/common_vault
   vars:
@@ -74,6 +90,7 @@
   hosts: registry
   vars_files:
     - vars/vars 
+    - vars/vault
     - vars/common_vars 
     - vars/common_vault
   vars:
@@ -85,6 +102,7 @@
   hosts: dest
   vars_files:
     - vars/vars 
+    - vars/vault
     - vars/common_vars 
     - vars/common_vault
   vars:

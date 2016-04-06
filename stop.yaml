@@ -3,9 +3,10 @@
 - name: stop
   hosts: registry
   vars_files:
+    - vars/vars
+    - vars/vault
     - vars/common_vars 
     - vars/common_vault
-    - vars/vars
   vars:
     - project_stage_dir: "{{ stage_dir }}/{{ project_id }}/{{ inventory_hostname }}"
   tasks:
