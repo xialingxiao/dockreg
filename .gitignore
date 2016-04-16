@@ -1,3 +1,4 @@
 /vars/*vault*
 hatchery
 digitalswarm
+*.retry

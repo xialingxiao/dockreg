@@ -13,7 +13,7 @@
 - name: create folder for auth
   file: path={{ project_stage_dir }}/registry/auth state=directory
 - name: create htpasswd file
-  command: 'docker run --entrypoint htpasswd registry:2 -Bbn {{ registry_user }} {{ registry_pass }}'
+  command: 'docker run --rm --entrypoint htpasswd registry:2 -Bbn {{ registry_user }} {{ registry_pass }}'
   register: htpasswd
 - name: write password to htpasswd file
   copy: 'content={{ htpasswd.stdout }} dest={{ project_stage_dir }}/registry/auth/htpasswd'
